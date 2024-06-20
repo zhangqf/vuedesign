@@ -10,7 +10,24 @@
 <body>
   <div id="app"></div>
   <!-- <script src="./index.js"></script> -->
-  <script src="./doubleEndDiff.js"></script>
+  <!-- <script src="./doubleEndDiff.js"></script> -->
+  <script src="./quicklyDiff.js"></script>
+  <script>
+    let num = [2, 3, 1 - 1]
+    function findLTS(num) {
+      let arr = [num[1]]
+      let len = num.length
+      if (len == 0) return 0
+      for (let i = 0; i < len; i++) {
+        if (i === 0) {
+          arr.push()
+        }
+      }
+      return arr
+    }
+    console.log(findLTS(num))
+
+  </script>
 </body>
 
 </html>
