@@ -137,7 +137,7 @@ function createRenderer(options) {
         const el = n2.el = n1.el
         if (n2.children !== n1.children) {
           setComment(el, n2.children)
-        }
+        } ``
       }
     } else if (type === Fragment) {
       if (!n1) {
