@@ -468,7 +468,22 @@ function createRenderer(options) {
       // 将插槽添加到组件实例上
       slots,
       // 在组件实例中添加mounted数组，用来储存通过onMounted函数注册的生命周期钩子函数
-      mounted: []
+      mounted: [],
+      // 只有KeepAlive组件的实例下会有KeepAliveCtx属性
+      keepAliveCtx: null
+    }
+    // 检查当前要挂载的组件是否是KeepAlive组件
+    const isKeepAlive = vnode.type.__isKeepAlive
+    if (isKeepAlive) {
+      // 在KeepAlive组件实例上添加keepAliveCtx对象
+      instance.keepAliveCtx = {
+        // move 函数用来移动一段vnode
+        move(vnode, container, anchor) {
+          // 本质上是将组件渲染的内容移动到指定容器中，即隐藏容器中
+          insert(vnode.component.subTree.el, container, anchor)
+        },
+        createElement
+      }
     }
     // 定义emit函数，它接收两个参数
     // event：事件名称
@@ -985,6 +1000,14 @@ function createRenderer(options) {
         if (typeof rawVNode.type !== 'object') {
           return rawVNode
         }
+        // 获取 “内部组件” 的name
+        const name = rawVNode.type.name
+        // 对name进行匹配 如果name无法被include匹配 或者被exclude匹配
+        if (name && ((props.include && !props.include.test(name))) || (props.exclude && props.exclude.test(name))) {
+          // 则直接渲染 “内部组件”， 不对其进行后续的缓存操作
+          return rawVNode
+        }
+
         // 在挂载时先获取缓存的组件vnode
         const cacheVNode = cache.get(rawVNode.type)
 
